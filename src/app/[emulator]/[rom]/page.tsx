@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import EmulatorContainer from '@/components/emulator/EmulatorContainer'
-import { getEmulator } from '@/lib/emulators'
+import { getEmulator, getEmulators } from '@/lib/emulators'
 import { getGame } from '@/lib/games'
 
 interface GamePageProps {
@@ -13,8 +13,8 @@ interface GamePageProps {
 export default async function GamePage({ params }: GamePageProps) {
   const { emulator, rom } = params
   
-  const emulatorConfig = await getEmulator(emulator)
-  const gameConfig = await getGame(emulator, rom)
+  const emulatorConfig = getEmulator(emulator)
+  const gameConfig = getGame(emulator, rom)
   
   if (!emulatorConfig || !gameConfig) {
     notFound()
@@ -31,6 +31,17 @@ export default async function GamePage({ params }: GamePageProps) {
 }
 
 export async function generateStaticParams() {
-  // This will be populated with available emulator/rom combinations
-  return []
+  const emulators = getEmulators()
+  const params: { emulator: string; rom: string }[] = []
+  
+  emulators.forEach(emulator => {
+    emulator.games.forEach(game => {
+      params.push({
+        emulator: emulator.id,
+        rom: game.id
+      })
+    })
+  })
+  
+  return params
 }

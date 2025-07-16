@@ -1,15 +1,14 @@
 import { EmulatorConfig } from '@/types'
+import { beepbopEmulator } from './beepbop'
 
-export async function getEmulator(id: string): Promise<EmulatorConfig | null> {
-  const emulators: Record<string, EmulatorConfig> = {
-    'beepbop': {
-      id: 'beepbop',
-      name: 'BeepBop Console',
-      description: 'A simple beep and bop emulator',
-      screenWidth: 320,
-      screenHeight: 240
-    }
-  }
-  
-  return emulators[id] || null
+const emulators: EmulatorConfig[] = [
+  beepbopEmulator
+]
+
+export function getEmulators(): EmulatorConfig[] {
+  return emulators
+}
+
+export function getEmulator(id: string): EmulatorConfig | null {
+  return emulators.find(emulator => emulator.id === id) || null
 }

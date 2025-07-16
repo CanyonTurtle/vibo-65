@@ -1,16 +1,16 @@
+export interface GameConfig {
+  id: string
+  name: string
+  description: string
+}
+
 export interface EmulatorConfig {
   id: string
   name: string
   description: string
   screenWidth: number
   screenHeight: number
-}
-
-export interface GameConfig {
-  id: string
-  name: string
-  description: string
-  emulator: string
+  games: GameConfig[]
 }
 
 export interface BeepBopInterface {

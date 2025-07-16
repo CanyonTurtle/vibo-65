@@ -1,16 +1,9 @@
 import { GameConfig } from '@/types'
+import { getEmulator } from '@/lib/emulators'
 
-export async function getGame(emulator: string, rom: string): Promise<GameConfig | null> {
-  const games: Record<string, Record<string, GameConfig>> = {
-    'beepbop': {
-      'hello-world': {
-        id: 'hello-world',
-        name: 'Hello World',
-        description: 'A simple hello world game',
-        emulator: 'beepbop'
-      }
-    }
-  }
+export function getGame(emulatorId: string, gameId: string): GameConfig | null {
+  const emulator = getEmulator(emulatorId)
+  if (!emulator) return null
   
-  return games[emulator]?.[rom] || null
+  return emulator.games.find(game => game.id === gameId) || null
 }
