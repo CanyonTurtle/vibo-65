@@ -37,9 +37,12 @@ export default async function EmulatorPage({ params }: EmulatorPageProps) {
           <h1 className="text-5xl font-bold text-white mb-4">
             {emulator.name}
           </h1>
-          <p className="text-xl text-blue-200 max-w-2xl mx-auto mb-6">
+          <p className="text-xl text-blue-200 max-w-2xl mx-auto mb-4">
             {emulator.description}
           </p>
+          <div className="text-sm text-blue-300 mb-2">
+            By {emulator.author} • Released {new Date(emulator.date).toLocaleDateString()}
+          </div>
           <div className="text-sm text-blue-300">
             Screen Resolution: {emulator.screenWidth} × {emulator.screenHeight}
           </div>
@@ -62,15 +65,18 @@ export default async function EmulatorPage({ params }: EmulatorPageProps) {
                     <div className="text-center">
                       <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-blue-500 rounded-lg mx-auto mb-4 flex items-center justify-center">
                         <span className="text-lg font-bold text-white">
-                          {game.name.charAt(0)}
+                          {game.title.charAt(0)}
                         </span>
                       </div>
                       <h3 className="text-lg font-semibold text-white mb-2">
-                        {game.name}
+                        {game.title}
                       </h3>
-                      <p className="text-blue-200 text-sm">
+                      <p className="text-blue-200 text-sm mb-2">
                         {game.description}
                       </p>
+                      <div className="text-xs text-blue-300 mb-3">
+                        By {game.author} • {new Date(game.date).toLocaleDateString()}
+                      </div>
                       <div className="mt-4">
                         <span className="inline-block bg-blue-600 text-white text-xs px-3 py-1 rounded-full">
                           Play Now

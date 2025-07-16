@@ -34,9 +34,12 @@ export default function Home() {
                   <h3 className="text-xl font-semibold text-white mb-2">
                     {emulator.name}
                   </h3>
-                  <p className="text-blue-200 text-sm mb-4">
+                  <p className="text-blue-200 text-sm mb-2">
                     {emulator.description}
                   </p>
+                  <div className="text-xs text-blue-300 mb-2">
+                    By {emulator.author} • {new Date(emulator.date).toLocaleDateString()}
+                  </div>
                   <div className="text-xs text-blue-300">
                     {emulator.games.length} game{emulator.games.length !== 1 ? 's' : ''} available
                   </div>
