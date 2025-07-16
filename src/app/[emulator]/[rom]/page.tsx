@@ -11,7 +11,7 @@ interface GamePageProps {
 }
 
 export default async function GamePage({ params }: GamePageProps) {
-  const { emulator, rom } = params
+  const { emulator, rom } = await params
   
   const emulatorConfig = getEmulator(emulator)
   const gameConfig = getGame(emulator, rom)
