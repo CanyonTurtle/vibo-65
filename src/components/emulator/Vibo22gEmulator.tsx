@@ -55,7 +55,7 @@ export function Vibo22gEmulator({ game, smallerDimension }: Vibo22gEmulatorProps
   // Drawing API implementation
   const drawingAPI = useCallback(() => {
     const ctx = contextRef.current
-    if (!ctx) return null
+    if (!ctx || !pixelSize.width || !pixelSize.height) return null
 
     return {
       drawPixel: (x: number, y: number, color: string) => {

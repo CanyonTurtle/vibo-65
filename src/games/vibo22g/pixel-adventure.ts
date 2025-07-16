@@ -2,10 +2,9 @@ import { Vibo22gGame, Vibo22gAPI } from '@/types'
 
 // Simple demo game showing off the Vibo22g API
 class PixelAdventure implements Vibo22gGame {
-  private playerX = 10
-  private playerY = 10
+  private playerX = 50
+  private playerY = 20
   private playerVelY = 0
-  private onGround = false
   private time = 0
   private particles: Array<{x: number, y: number, vx: number, vy: number, life: number}> = []
 
@@ -45,41 +44,91 @@ class PixelAdventure implements Vibo22gGame {
   }
 
   private handleInput(api: Vibo22gAPI) {
+    const screenWidth = api.draw.getScreenWidth()
+    
     // Movement
     if (api.input.getKey('a') || api.input.getKey('arrowleft')) {
       this.playerX = Math.max(0, this.playerX - 2)
     }
     if (api.input.getKey('d') || api.input.getKey('arrowright')) {
-      this.playerX = Math.min(api.draw.getScreenWidth() - 8, this.playerX + 2)
+      this.playerX = Math.min(screenWidth - 8, this.playerX + 2)
     }
     
-    // Jump
-    if ((api.input.getKey('w') || api.input.getKey('arrowup') || api.input.getKey(' ')) && this.onGround) {
-      this.playerVelY = -8
-      this.onGround = false
-      // Jump sound
-      api.sound.playNote(3, 330, 0.1)
+    // Jump - check if player is on any platform or ground
+    if (api.input.getKey('w') || api.input.getKey('arrowup') || api.input.getKey(' ')) {
+      if (this.canJump()) {
+        this.playerVelY = -150
+        api.sound.playNote(3, 330, 0.1)
+      }
     }
   }
 
-  private updatePhysics(deltaTime: number) {
-    // Gravity
-    this.playerVelY += 20 * deltaTime
-    this.playerY += this.playerVelY
+  private canJump(): boolean {
+    const playerBottom = this.playerY + 8
+    const playerLeft = this.playerX
+    const playerRight = this.playerX + 8
+    
+    // Check if on ground
+    if (this.playerY >= 70) return true
+    
+    // Check if on any platform
+    // Platform 1: x:30-60, y:70-75 (top at y:70)
+    if (playerRight > 30 && playerLeft < 60 && Math.abs(playerBottom - 70) < 2) return true
+    
+    // Platform 2: x:80-110, y:55-60 (top at y:55)
+    if (playerRight > 80 && playerLeft < 110 && Math.abs(playerBottom - 55) < 2) return true
+    
+    // Platform 3: dynamic width platform (top at y:65)
+    const screenWidth = 140 // fallback
+    if (playerRight > screenWidth - 50 && playerLeft < screenWidth - 20 && Math.abs(playerBottom - 65) < 2) return true
+    
+    return false
+  }
 
-    // Ground collision
-    const groundY = 80
-    if (this.playerY >= groundY) {
-      this.playerY = groundY
-      this.playerVelY = 0
-      this.onGround = true
-      
-      // Create landing particles
-      if (this.playerVelY > 0) {
-        this.createParticles(this.playerX + 4, this.playerY + 8, 3)
+  private updatePhysics(deltaTime: number) {
+    // Force physics to work regardless of deltaTime
+    this.playerVelY += 5 // Fixed gravity increment
+    
+    // Update position
+    this.playerY += this.playerVelY * 0.016 // Fixed 60fps deltaTime
+    
+    // Platform collision detection
+    const playerBottom = this.playerY + 8 // Player is 8 pixels tall
+    const playerLeft = this.playerX
+    const playerRight = this.playerX + 8 // Player is 8 pixels wide
+    
+    let landed = false
+    
+    // Check platform collisions only when falling
+    if (this.playerVelY > 0) {
+      // Platform 1: x:30-60, y:70-75
+      if (playerRight > 30 && playerLeft < 60 && playerBottom >= 70 && playerBottom <= 75) {
+        this.playerY = 70 - 8
+        this.playerVelY = 0
+        landed = true
       }
-    } else {
-      this.onGround = false
+      // Platform 2: x:80-110, y:55-60
+      else if (playerRight > 80 && playerLeft < 110 && playerBottom >= 55 && playerBottom <= 60) {
+        this.playerY = 55 - 8
+        this.playerVelY = 0
+        landed = true
+      }
+      // Platform 3: x:90-120, y:65-70 (fixed width)
+      else if (playerRight > 90 && playerLeft < 120 && playerBottom >= 65 && playerBottom <= 70) {
+        this.playerY = 65 - 8
+        this.playerVelY = 0
+        landed = true
+      }
+      // Ground collision
+      else if (this.playerY > 70) {
+        this.playerY = 70
+        this.playerVelY = 0
+        landed = true
+      }
+    }
+    
+    if (landed) {
+      this.createParticles(this.playerX + 4, this.playerY + 8, 2)
     }
   }
 
@@ -165,15 +214,19 @@ class PixelAdventure implements Vibo22gGame {
 
   private drawUI(api: Vibo22gAPI) {
     const screenWidth = api.draw.getScreenWidth()
+    const screenHeight = api.draw.getScreenHeight()
     
     // Instructions
     this.drawText(api, 'WASD/ARROWS: Move, SPACE: Jump', 2, 2, '#ffffff')
     
     // Player position debug info
-    this.drawText(api, `X:${Math.floor(this.playerX)} Y:${Math.floor(this.playerY)}`, screenWidth - 60, 2, '#888888')
+    this.drawText(api, `X:${Math.floor(this.playerX)} Y:${Math.floor(this.playerY)} VelY:${this.playerVelY.toFixed(1)}`, Math.max(2, screenWidth - 120), 2, '#888888')
+    
+    // Screen size debug
+    this.drawText(api, `Screen: ${screenWidth}x${screenHeight}`, 2, 10, '#888888')
     
     // Frame counter
-    this.drawText(api, `Time: ${this.time.toFixed(1)}s`, 2, screenWidth > 200 ? 10 : api.draw.getScreenHeight() - 10, '#888888')
+    this.drawText(api, `Time: ${this.time.toFixed(1)}s`, 2, screenWidth > 200 ? 18 : screenHeight - 10, '#888888')
   }
 
   private drawText(api: Vibo22gAPI, text: string, x: number, y: number, color: string) {
