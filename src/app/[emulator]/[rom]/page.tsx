@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import EmulatorContainer from '@/components/emulator/EmulatorContainer'
 import { getEmulator, getEmulators } from '@/lib/emulators'
@@ -22,6 +23,14 @@ export default async function GamePage({ params }: GamePageProps) {
   
   return (
     <div className="min-h-screen bg-black">
+      <div className="absolute top-4 left-4 z-10">
+        <Link 
+          href={`/${emulator}`}
+          className="inline-flex items-center bg-black/50 backdrop-blur-sm text-white px-4 py-2 rounded-lg hover:bg-black/70 transition-colors"
+        >
+          ← Back to {emulatorConfig.name}
+        </Link>
+      </div>
       <EmulatorContainer 
         emulator={emulatorConfig}
         game={gameConfig}
