@@ -28,7 +28,7 @@ export function BeepBopEmulator({ game }: BeepBopEmulatorProps) {
     ctx.fillStyle = '#fff'
     ctx.font = '16px monospace'
     ctx.textAlign = 'center'
-    ctx.fillText(game.name, canvas.width / 2, canvas.height / 2)
+    ctx.fillText(game.title, canvas.width / 2, canvas.height / 2)
     
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'b') beepbop.beep()
@@ -40,7 +40,7 @@ export function BeepBopEmulator({ game }: BeepBopEmulatorProps) {
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [game.name])
+  }, [game.title])
   
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-gray-900">
