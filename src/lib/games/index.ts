@@ -1,7 +1,7 @@
-import { GameConfig } from '@/types'
+import { GameBase } from '@/types'
 import { getEmulator } from '@/lib/emulators'
 
-export function getGame(emulatorId: string, gameId: string): GameConfig | null {
+export function getGame(emulatorId: string, gameId: string): GameBase | null {
   const emulator = getEmulator(emulatorId)
   if (!emulator) return null
   

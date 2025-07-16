@@ -1,10 +1,10 @@
 'use client'
 
-import { GameConfig, BeepBopInterface } from '@/types'
+import { GameBase, BeepBopInterface } from '@/types'
 import { useEffect, useRef } from 'react'
 
 interface BeepBopEmulatorProps {
-  game: GameConfig
+  game: GameBase
 }
 
 export function BeepBopEmulator({ game }: BeepBopEmulatorProps) {
@@ -57,7 +57,7 @@ export function BeepBopEmulator({ game }: BeepBopEmulatorProps) {
       />
       
       <div className="mt-4 text-sm text-gray-400">
-        Press 'b' to beep, 'p' to bop
+        Press &apos;b&apos; to beep, &apos;p&apos; to bop
       </div>
     </div>
   )

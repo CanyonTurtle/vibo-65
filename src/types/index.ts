@@ -16,14 +16,10 @@ export interface EmulatorBase {
   previewImageLink?: string
 }
 
-export interface GameConfig extends GameBase {
-  // Games can extend this with emulator-specific properties
-}
-
 export interface EmulatorConfig extends EmulatorBase {
   screenWidth: number
   screenHeight: number
-  games: GameConfig[]
+  games: GameBase[]
 }
 
 // BeepBop specific interfaces

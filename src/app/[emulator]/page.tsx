@@ -3,9 +3,9 @@ import { notFound } from 'next/navigation'
 import { getEmulator, getEmulators } from '@/lib/emulators'
 
 interface EmulatorPageProps {
-  params: {
+  params: Promise<{
     emulator: string
-  }
+  }>
 }
 
 export default async function EmulatorPage({ params }: EmulatorPageProps) {

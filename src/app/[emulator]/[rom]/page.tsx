@@ -5,10 +5,10 @@ import { getEmulator, getEmulators } from '@/lib/emulators'
 import { getGame } from '@/lib/games'
 
 interface GamePageProps {
-  params: {
+  params: Promise<{
     emulator: string
     rom: string
-  }
+  }>
 }
 
 export default async function GamePage({ params }: GamePageProps) {
